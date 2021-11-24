@@ -154,8 +154,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
     //get text direction
     String textDir = json['direction'] ?? 'ltr';
     //check the parent element if it matches one of the predetermined styles and update the toolbar
-    if (['pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-        .contains(parentElem)) {
+    if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].contains(parentElem)) {
       setState(mounted, this.setState, () {
         _fontSelectedItem = parentElem;
       });
@@ -509,71 +508,46 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     value: 'p',
                     child: PointerInterceptor(child: Text('Normal'))),
                 CustomDropdownMenuItem(
-                    value: 'blockquote',
-                    child: PointerInterceptor(
-                      child: Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  left: BorderSide(
-                                      color: Colors.grey, width: 3.0))),
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Text('Quote',
-                              style: TextStyle(
-                                  fontFamily: 'times', color: Colors.grey))),
-                    )),
-                CustomDropdownMenuItem(
-                    value: 'pre',
-                    child: PointerInterceptor(
-                      child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.grey),
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Text('Code',
-                              style: TextStyle(
-                                  fontFamily: 'courier', color: Colors.white))),
-                    )),
-                CustomDropdownMenuItem(
                   value: 'h1',
                   child: PointerInterceptor(
-                      child: Text('Header 1',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 32))),
+                      child: Text(
+                    'Header 1',
+                  )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h2',
                   child: PointerInterceptor(
-                      child: Text('Header 2',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24))),
+                      child: Text(
+                    'Header 2',
+                  )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h3',
                   child: PointerInterceptor(
-                      child: Text('Header 3',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18))),
+                      child: Text(
+                    'Header 3',
+                  )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h4',
                   child: PointerInterceptor(
-                      child: Text('Header 4',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16))),
+                      child: Text(
+                    'Header 4',
+                  )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h5',
                   child: PointerInterceptor(
-                      child: Text('Header 5',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 13))),
+                      child: Text(
+                    'Header 5',
+                  )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h6',
                   child: PointerInterceptor(
-                      child: Text('Header 6',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 11))),
+                      child: Text(
+                    'Header 6',
+                  )),
                 ),
               ],
               value: _fontSelectedItem,
