@@ -1,5 +1,4 @@
 export 'dart:html';
-
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -522,7 +521,9 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
             }
           }
         });
+
         html.window.postMessage(jsonStr, '*');
+        await Future.delayed(const Duration(seconds: 2), () {});
         html.window.postMessage(jsonStr2, '*');
       });
     ui.platformViewRegistry
