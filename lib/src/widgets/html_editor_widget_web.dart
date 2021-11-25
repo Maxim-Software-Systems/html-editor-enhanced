@@ -469,6 +469,8 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
       // ignore: unsafe_html, necessary to load HTML string
       ..srcdoc = htmlString
       ..style.border = 'none'
+      ..style.width = '100%'
+      ..style.height = '100%'
       ..onLoad.listen((event) async {
         if (widget.callbacks != null && widget.callbacks!.onInit != null) {
           widget.callbacks!.onInit!.call();
