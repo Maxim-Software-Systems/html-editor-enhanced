@@ -1750,7 +1750,8 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                       ?.call(ButtonType.link, null, null) ??
                   true;
               if (proceed) {
-                final text = TextEditingController();
+                final text = TextEditingController(
+                    text: await widget.controller.getSelectedTextWeb());
                 final url = TextEditingController();
                 final textFocus = FocusNode();
                 final urlFocus = FocusNode();
