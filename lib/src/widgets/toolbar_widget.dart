@@ -413,14 +413,6 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                                     });
                                     await Future.delayed(
                                         Duration(milliseconds: 100));
-                                    if (kIsWeb) {
-                                      widget.controller.recalculateHeight();
-                                    } else {
-                                      await widget.controller.editorController!
-                                          .evaluateJavascript(
-                                              source:
-                                                  "var height = \$('div.note-editable').outerHeight(true); window.flutter_inappwebview.callHandler('setHeight', height);");
-                                    }
                                   },
                                 ),
                               )),
@@ -441,14 +433,6 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                                 _isExpanded = !_isExpanded;
                               });
                               await Future.delayed(Duration(milliseconds: 100));
-                              if (kIsWeb) {
-                                widget.controller.recalculateHeight();
-                              } else {
-                                await widget.controller.editorController!
-                                    .evaluateJavascript(
-                                        source:
-                                            "var height = \$('div.note-editable').outerHeight(true); window.flutter_inappwebview.callHandler('setHeight', height);");
-                              }
                             }),
                           ),
                           SliverFillRemaining(
