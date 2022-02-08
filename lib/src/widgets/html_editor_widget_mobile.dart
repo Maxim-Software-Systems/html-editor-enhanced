@@ -404,7 +404,7 @@ class _HtmlEditorWidgetMobileState extends State<HtmlEditorWidget> {
                             var fontName;
                             var fontSize = 16;
                             var foreColor = "000000";
-                            var backColor = "FFFF00";
+                            var backColor = "FFFFFF";
                             var focusNode2 = \$(window.getSelection().focusNode);
                             var parentList = focusNode2.closest("div.note-editable ol, div.note-editable ul");
                             var parentListType = parentList.css('list-style-type');
@@ -428,7 +428,7 @@ class _HtmlEditorWidgetMobileState extends State<HtmlEditorWidget> {
                               parent = document.queryCommandValue('formatBlock');
                               fontSize = document.queryCommandValue('fontSize');
                               foreColor = document.queryCommandValue('foreColor');
-                              backColor = document.queryCommandValue('hiliteColor');
+                              backColor = document.queryCommandValue('color');
                               fontName = document.queryCommandValue('fontName');
                             }
                             var message = {

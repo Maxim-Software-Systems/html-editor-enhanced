@@ -77,7 +77,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
   Color _foreColorSelected = Colors.black;
 
   /// Sets the selected item for the background color dialog
-  Color _backColorSelected = Colors.yellow;
+  Color _backColorSelected = Colors.white;
 
   /// Sets the selected item for the list style dropdown
   String? _listStyleSelectedItem;
@@ -180,20 +180,26 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
         var rgbList = rgb.split(', ');
         _foreColorSelected = Color.fromRGBO(int.parse(rgbList[0]),
             int.parse(rgbList[1]), int.parse(rgbList[2]), 1);
+        _colorSelected[0] = (_foreColorSelected != Colors.black);
       });
     } else {
       setState(mounted, this.setState, () {
         _foreColorSelected = Colors.black;
+        _colorSelected[0] = (_foreColorSelected != Colors.black);
       });
     }
     if (colorList[1] != null && colorList[1]!.isNotEmpty) {
       setState(mounted, this.setState, () {
-        _backColorSelected =
-            Color(int.parse(colorList[1]!, radix: 16) + 0xFF000000);
+        var rgb = colorList[1]!.replaceAll('rgb(', '').replaceAll(')', '');
+        var rgbList = rgb.split(', ');
+        _backColorSelected = Color.fromRGBO(int.parse(rgbList[0]),
+            int.parse(rgbList[1]), int.parse(rgbList[2]), 1);
+        _colorSelected[1] = (_backColorSelected != Colors.white);
       });
     } else {
       setState(mounted, this.setState, () {
-        _backColorSelected = Colors.yellow;
+        _backColorSelected = Colors.white;
+        _colorSelected[1] = (_backColorSelected != Colors.white);
       });
     }
     //check the list style if it matches one of the predetermined styles and update the toolbar
@@ -1029,7 +1035,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     true;
                 if (proceed) {
                   widget.controller.execCommand('hiliteColor',
-                      argument: (Colors.yellow.value & 0xFFFFFF)
+                      argument: (Colors.white.value & 0xFFFFFF)
                           .toRadixString(16)
                           .padLeft(6, '0')
                           .toUpperCase());
@@ -1114,7 +1120,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                                   if (t.getIcons()[index].icon ==
                                       Icons.format_color_fill) {
                                     setState(mounted, this.setState, () {
-                                      _backColorSelected = Colors.yellow;
+                                      _backColorSelected = Colors.white;
                                     });
                                     widget.controller.execCommand(
                                         'removeFormat',
