@@ -521,9 +521,8 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
             }
           }
         });
-        await Future.delayed(const Duration(seconds: 2), () {});
         html.window.postMessage(jsonStr, '*');
-        await Future.delayed(const Duration(seconds: 2), () {});
+        await Future.delayed(const Duration(seconds: 5), () {});
         html.window.postMessage(jsonStr2, '*');
       });
     ui.platformViewRegistry
