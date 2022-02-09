@@ -85,6 +85,7 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
     text = _processHtml(html: text);
     _evaluateJavascript(
         source: "\$('#summernote-2').summernote('code', '$text');");
+    resetHeight();
   }
 
   /// Sets the editor to full-screen mode.
