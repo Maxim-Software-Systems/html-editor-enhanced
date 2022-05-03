@@ -1097,12 +1097,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 } else {
                   newColor = _backColorSelected;
                 }
-                PointerInterceptor(
-                  debug: _isDebug,
-                  child: await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return PointerInterceptor(
+                      debug: _isDebug,
+                      child: Dialog(
                         child: ColorPicker(
                           color: newColor,
                           onColorChanged: (color) {
@@ -1195,9 +1195,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                           )
                         ],
                         */
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 );
               }
             }
