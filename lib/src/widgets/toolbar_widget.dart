@@ -342,7 +342,6 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
   Widget build(BuildContext context) {
     if (widget.htmlToolbarOptions.toolbarType == ToolbarType.nativeGrid) {
       return PointerInterceptor(
-        debug: _isDebug,
         child: AbsorbPointer(
           absorbing: !_enabled,
           child: Opacity(
@@ -361,7 +360,6 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
     } else if (widget.htmlToolbarOptions.toolbarType ==
         ToolbarType.nativeScrollable) {
       return PointerInterceptor(
-        debug: _isDebug,
         child: AbsorbPointer(
           absorbing: !_enabled,
           child: Opacity(
