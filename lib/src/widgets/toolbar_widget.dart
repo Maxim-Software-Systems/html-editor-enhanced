@@ -504,48 +504,55 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               items: [
                 CustomDropdownMenuItem(
                     value: 'p',
-                    child: PointerInterceptor(child: Text('Normal'))),
+                    child: PointerInterceptor(
+                        debug: _isDebug, child: Text('Normal'))),
                 CustomDropdownMenuItem(
                   value: 'h1',
                   child: PointerInterceptor(
+                      debug: _isDebug,
                       child: Text(
-                    'Header 1',
-                  )),
+                        'Header 1',
+                      )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h2',
                   child: PointerInterceptor(
+                      debug: _isDebug,
                       child: Text(
-                    'Header 2',
-                  )),
+                        'Header 2',
+                      )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h3',
                   child: PointerInterceptor(
+                      debug: _isDebug,
                       child: Text(
-                    'Header 3',
-                  )),
+                        'Header 3',
+                      )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h4',
                   child: PointerInterceptor(
+                      debug: _isDebug,
                       child: Text(
-                    'Header 4',
-                  )),
+                        'Header 4',
+                      )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h5',
                   child: PointerInterceptor(
+                      debug: _isDebug,
                       child: Text(
-                    'Header 5',
-                  )),
+                        'Header 5',
+                      )),
                 ),
                 CustomDropdownMenuItem(
                   value: 'h6',
                   child: PointerInterceptor(
+                      debug: _isDebug,
                       child: Text(
-                    'Header 6',
-                  )),
+                        'Header 6',
+                      )),
                 ),
               ],
               value: _fontSelectedItem,
@@ -1777,6 +1784,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     context: context,
                     builder: (BuildContext context) {
                       return PointerInterceptor(
+                        debug: _isDebug,
                         child: StatefulBuilder(builder:
                             (BuildContext context, StateSetter setState) {
                           return AlertDialog(
@@ -1917,6 +1925,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     context: context,
                     builder: (BuildContext context) {
                       return PointerInterceptor(
+                        debug: _isDebug,
                         child: StatefulBuilder(builder:
                             (BuildContext context, StateSetter setState) {
                           return AlertDialog(
@@ -2069,6 +2078,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     context: context,
                     builder: (BuildContext context) {
                       return PointerInterceptor(
+                        debug: _isDebug,
                         child: StatefulBuilder(builder:
                             (BuildContext context, StateSetter setState) {
                           return AlertDialog(
