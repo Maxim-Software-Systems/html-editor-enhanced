@@ -1102,9 +1102,8 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   child: await showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return AlertDialog(
-                        scrollable: true,
-                        content: ColorPicker(
+                      return Dialog(
+                        child: ColorPicker(
                           color: newColor,
                           onColorChanged: (color) {
                             newColor = color;
@@ -1130,6 +1129,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                             dialogActionButtons: true,
                           ),
                         ),
+                        /*
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
@@ -1194,6 +1194,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                             child: Text('Set color'),
                           )
                         ],
+                        */
                       );
                     },
                   ),
