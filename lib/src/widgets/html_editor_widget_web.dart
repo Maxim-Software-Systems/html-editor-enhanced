@@ -88,19 +88,17 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
               child: FutureBuilder<bool>(
                 future: summernoteInit,
                 builder: (context, snapshot) {
-                  /*
                   if (snapshot.hasData) {
                     return HtmlElementView(
                       viewType: createdViewId,
                     );
                   } else {
-                    */
-                  return Container(
-                    height: widget.htmlEditorOptions.autoAdjustHeight
-                        ? actualHeight
-                        : widget.otherOptions.height,
-                  );
-                  //}
+                    return Container(
+                      height: widget.htmlEditorOptions.autoAdjustHeight
+                          ? actualHeight
+                          : widget.otherOptions.height,
+                    );
+                  }
                 },
               ),
             ),
