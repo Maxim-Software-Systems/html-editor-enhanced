@@ -1,6 +1,5 @@
 export 'dart:html';
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,14 +57,282 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
 
   @override
   void initState() {
+    super.initState();
+
     actualHeight = widget.otherOptions.height;
     createdViewId = getRandString(10);
     widget.controller.viewId = createdViewId;
-    initSummernote();
-    super.initState();
+
+    _initSummernote();
   }
 
-  void initSummernote() async {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: widget.htmlEditorOptions.autoAdjustHeight
+          ? actualHeight
+          : widget.otherOptions.height,
+      child: Column(
+        children: <Widget>[
+          widget.htmlToolbarOptions.toolbarPosition ==
+                  ToolbarPosition.aboveEditor
+              ? ToolbarWidget(
+                  key: toolbarKey,
+                  controller: widget.controller,
+                  htmlToolbarOptions: widget.htmlToolbarOptions,
+                  callbacks: widget.callbacks)
+              : Container(height: 0, width: 0),
+          Expanded(
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: FutureBuilder<bool>(
+                future: summernoteInit,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return HtmlElementView(
+                      viewType: createdViewId,
+                    );
+                  } else {
+                    return Container(
+                      height: widget.htmlEditorOptions.autoAdjustHeight
+                          ? actualHeight
+                          : widget.otherOptions.height,
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+          widget.htmlToolbarOptions.toolbarPosition ==
+                  ToolbarPosition.belowEditor
+              ? ToolbarWidget(
+                  key: toolbarKey,
+                  controller: widget.controller,
+                  htmlToolbarOptions: widget.htmlToolbarOptions,
+                  callbacks: widget.callbacks,
+                )
+              : Container(
+                  height: 0,
+                  width: 0,
+                ),
+        ],
+      ),
+    );
+  }
+
+  /// Adds the callbacks the user set into JavaScript
+  String _getJsCallbacks(Callbacks c) {
+    var callbacks = '';
+    if (c.onBeforeCommand != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.before.command', function(_, contents, \$editable) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onBeforeCommand", "contents": contents}), "*");
+          });\n
+        """;
+    }
+    if (c.onChangeCodeview != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.change.codeview', function(_, contents, \$editable) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onChangeCodeview", "contents": contents}), "*");
+          });\n
+        """;
+    }
+    if (c.onDialogShown != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.dialog.shown', function() {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onDialogShown"}), "*");
+          });\n
+        """;
+    }
+    if (c.onEnter != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.enter', function() {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onEnter"}), "*");
+          });\n
+        """;
+    }
+    if (c.onFocus != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.focus', function() {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onFocus"}), "*");
+          });\n
+        """;
+    }
+    if (c.onBlur != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.blur', function() {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onBlur"}), "*");
+          });\n
+        """;
+    }
+    if (c.onBlurCodeview != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.blur.codeview', function() {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onBlurCodeview"}), "*");
+          });\n
+        """;
+    }
+    if (c.onKeyDown != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.keydown', function(_, e) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onKeyDown", "keyCode": e.keyCode}), "*");
+          });\n
+        """;
+    }
+    if (c.onKeyUp != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.keyup', function(_, e) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onKeyUp", "keyCode": e.keyCode}), "*");
+          });\n
+        """;
+    }
+    if (c.onMouseDown != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.mousedown', function(_) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onMouseDown"}), "*");
+          });\n
+        """;
+    }
+    if (c.onMouseUp != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.mouseup', function(_) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onMouseUp"}), "*");
+          });\n
+        """;
+    }
+    if (c.onPaste != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.paste', function(_) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onPaste"}), "*");
+          });\n
+        """;
+    }
+    if (c.onScroll != null) {
+      callbacks = callbacks +
+          """
+          \$('#summernote-2').on('summernote.scroll', function(_) {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onScroll"}), "*");
+          });\n
+        """;
+    }
+    return callbacks;
+  }
+
+  /// Adds an event listener to check when a callback is fired
+  void _addJSListener(Callbacks c) {
+    html.window.onMessage.listen((event) {
+      var data = json.decode(event.data);
+      if (data['type'] != null &&
+          data['type'].contains('toDart:') &&
+          data['view'] == createdViewId) {
+        if (data['type'].contains('onBeforeCommand')) {
+          c.onBeforeCommand!.call(data['contents']);
+        }
+        if (data['type'].contains('onChangeContent')) {
+          c.onChangeContent!.call(data['contents']);
+        }
+        if (data['type'].contains('onChangeCodeview')) {
+          c.onChangeCodeview!.call(data['contents']);
+        }
+        if (data['type'].contains('onDialogShown')) {
+          c.onDialogShown!.call();
+        }
+        if (data['type'].contains('onEnter')) {
+          c.onEnter!.call();
+        }
+        if (data['type'].contains('onFocus')) {
+          c.onFocus!.call();
+        }
+        if (data['type'].contains('onBlur')) {
+          c.onBlur!.call();
+        }
+        if (data['type'].contains('onBlurCodeview')) {
+          c.onBlurCodeview!.call();
+        }
+        if (data['type'].contains('onImageLinkInsert')) {
+          c.onImageLinkInsert!.call(data['url']);
+        }
+        if (data['type'].contains('onImageUpload')) {
+          var map = <String, dynamic>{
+            'lastModified': data['lastModified'],
+            'lastModifiedDate': data['lastModifiedDate'],
+            'name': data['name'],
+            'size': data['size'],
+            'type': data['mimeType'],
+            'base64': data['base64']
+          };
+          var jsonStr = json.encode(map);
+          var file = fileUploadFromJson(jsonStr);
+          c.onImageUpload!.call(file);
+        }
+        if (data['type'].contains('onImageUploadError')) {
+          if (data['base64'] != null) {
+            c.onImageUploadError!.call(
+                null,
+                data['base64'],
+                data['error'].contains('base64')
+                    ? UploadError.jsException
+                    : data['error'].contains('unsupported')
+                        ? UploadError.unsupportedFile
+                        : UploadError.exceededMaxSize);
+          } else {
+            var map = <String, dynamic>{
+              'lastModified': data['lastModified'],
+              'lastModifiedDate': data['lastModifiedDate'],
+              'name': data['name'],
+              'size': data['size'],
+              'type': data['mimeType']
+            };
+            var jsonStr = json.encode(map);
+            var file = fileUploadFromJson(jsonStr);
+            c.onImageUploadError!.call(
+                file,
+                null,
+                data['error'].contains('base64')
+                    ? UploadError.jsException
+                    : data['error'].contains('unsupported')
+                        ? UploadError.unsupportedFile
+                        : UploadError.exceededMaxSize);
+          }
+        }
+        if (data['type'].contains('onKeyDown')) {
+          c.onKeyDown!.call(data['keyCode']);
+        }
+        if (data['type'].contains('onKeyUp')) {
+          c.onKeyUp!.call(data['keyCode']);
+        }
+        if (data['type'].contains('onMouseDown')) {
+          c.onMouseDown!.call();
+        }
+        if (data['type'].contains('onMouseUp')) {
+          c.onMouseUp!.call();
+        }
+        if (data['type'].contains('onPaste')) {
+          c.onPaste!.call();
+        }
+        if (data['type'].contains('onScroll')) {
+          c.onScroll!.call();
+        }
+        if (data['type'].contains('characterCount')) {
+          widget.controller.characterCount = data['totalChars'];
+        }
+      }
+    });
+  }
+
+  void _initSummernote() async {
     var headString = '';
     var summernoteCallbacks = '''callbacks: {
         onKeydown: function(e) {
@@ -178,29 +445,37 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
             """;
       }
     }
+
     summernoteCallbacks = summernoteCallbacks + '}';
     var darkCSS = '';
+
     if ((Theme.of(widget.initBC).brightness == Brightness.dark ||
             widget.htmlEditorOptions.darkMode == true) &&
         widget.htmlEditorOptions.darkMode != false) {
       darkCSS =
           '<link href=\"assets/packages/html_editor_enhanced/assets/summernote-lite-dark.css\" rel=\"stylesheet\">';
     }
+
     var jsCallbacks = '';
+
     if (widget.callbacks != null) {
-      jsCallbacks = getJsCallbacks(widget.callbacks!);
+      jsCallbacks = _getJsCallbacks(widget.callbacks!);
     }
+
     var userScripts = '';
+
     if (widget.htmlEditorOptions.webInitialScripts != null) {
-      widget.htmlEditorOptions.webInitialScripts!.forEach((element) {
-        userScripts = userScripts +
-            '''
+      widget.htmlEditorOptions.webInitialScripts!.forEach(
+        (element) {
+          userScripts = userScripts +
+              '''
           if (data["type"].includes("${element.name}")) {
             ${element.script}
           }
         ''' +
-            '\n';
-      });
+              '\n';
+        },
+      );
     }
     var summernoteScripts = """
       <script type="text/javascript">
@@ -445,21 +720,31 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
     """;
     var filePath =
         'packages/html_editor_enhanced/assets/summernote-no-plugins.html';
+
     if (widget.htmlEditorOptions.filePath != null) {
       filePath = widget.htmlEditorOptions.filePath!;
     }
+
     var htmlString = await rootBundle.loadString(filePath);
     htmlString = htmlString
         .replaceFirst('<!--darkCSS-->', darkCSS)
         .replaceFirst('<!--headString-->', headString)
         .replaceFirst('<!--summernoteScripts-->', summernoteScripts)
-        .replaceFirst('"jquery.min.js"',
-            '"assets/packages/html_editor_enhanced/assets/jquery.min.js"')
-        .replaceFirst('"summernote-lite.min.css"',
-            '"assets/packages/html_editor_enhanced/assets/summernote-lite.min.css"')
-        .replaceFirst('"summernote-lite.min.js"',
-            '"assets/packages/html_editor_enhanced/assets/summernote-lite.min.js"');
-    if (widget.callbacks != null) addJSListener(widget.callbacks!);
+        .replaceFirst(
+          '"jquery.min.js"',
+          '"assets/packages/html_editor_enhanced/assets/jquery.min.js"',
+        )
+        .replaceFirst(
+          '"summernote-lite.min.css"',
+          '"assets/packages/html_editor_enhanced/assets/summernote-lite.min.css"',
+        )
+        .replaceFirst(
+          '"summernote-lite.min.js"',
+          '"assets/packages/html_editor_enhanced/assets/summernote-lite.min.js"',
+        );
+
+    if (widget.callbacks != null) _addJSListener(widget.callbacks!);
+
     final iframe = html.IFrameElement()
       ..width = MediaQuery.of(widget.initBC).size.width.toString() //'800'
       ..height = widget.htmlEditorOptions.autoAdjustHeight
@@ -470,323 +755,78 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
       ..style.border = 'none'
       ..style.width = '100%'
       ..style.height = '100%'
-      ..onLoad.listen((event) async {
-        if (widget.callbacks != null && widget.callbacks!.onInit != null) {
-          widget.callbacks!.onInit!.call();
-        }
-        if (widget.htmlEditorOptions.initialText != null) {
-          widget.controller.setText(widget.htmlEditorOptions.initialText!);
-        }
-        var data = <String, Object>{'type': 'toIframe: getHeight'};
-        data['view'] = createdViewId;
-        var data2 = <String, Object>{'type': 'toIframe: setInputType'};
-        data2['view'] = createdViewId;
-        final jsonEncoder = JsonEncoder();
-        var jsonStr = jsonEncoder.convert(data);
-        var jsonStr2 = jsonEncoder.convert(data2);
-        html.window.onMessage.listen((event) {
-          var data = json.decode(event.data);
-          if (data['type'] != null &&
-              data['type'].contains('toDart: htmlHeight') &&
-              data['view'] == createdViewId &&
-              widget.htmlEditorOptions.autoAdjustHeight) {
-            final docHeight = data['height'] ?? actualHeight;
-            if ((docHeight != null && docHeight != actualHeight) && mounted) {
-              setState(mounted, this.setState, () {
-                actualHeight =
-                    docHeight + (toolbarKey.currentContext?.size?.height ?? 0);
-              });
-            }
+      ..onLoad.listen(
+        (event) async {
+          if (widget.callbacks != null && widget.callbacks!.onInit != null) {
+            widget.callbacks!.onInit!.call();
           }
-          if (data['type'] != null &&
-              data['type'].contains('toDart: onChangeContent') &&
-              data['view'] == createdViewId) {
-            if (widget.callbacks != null &&
-                widget.callbacks!.onChangeContent != null) {
-              widget.callbacks!.onChangeContent!.call(data['contents']);
-            }
-            if (widget.htmlEditorOptions.shouldEnsureVisible &&
-                Scrollable.of(context) != null) {
-              Scrollable.of(context)!.position.ensureVisible(
-                  context.findRenderObject()!,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeIn);
-            }
+          if (widget.htmlEditorOptions.initialText != null) {
+            widget.controller.setText(widget.htmlEditorOptions.initialText!);
           }
-          if (data['type'] != null &&
-              data['type'].contains('toDart: updateToolbar') &&
-              data['view'] == createdViewId) {
-            if (widget.controller.toolbar != null) {
-              widget.controller.toolbar!.updateToolbar(data);
-            }
-          }
-        });
-        html.window.postMessage(jsonStr, '*');
-        await Future.delayed(const Duration(seconds: 5), () {});
-        html.window.postMessage(jsonStr2, '*');
-      });
-    ui.platformViewRegistry
-        .registerViewFactory(createdViewId, (int viewId) => iframe);
+          var data = <String, Object>{'type': 'toIframe: getHeight'};
+          data['view'] = createdViewId;
+          var data2 = <String, Object>{'type': 'toIframe: setInputType'};
+          data2['view'] = createdViewId;
+          final jsonEncoder = JsonEncoder();
+          var jsonStr = jsonEncoder.convert(data);
+          var jsonStr2 = jsonEncoder.convert(data2);
+          html.window.onMessage.listen(
+            (event) {
+              var data = json.decode(event.data);
+
+              if (data['type'] != null &&
+                  data['type'].contains('toDart: htmlHeight') &&
+                  data['view'] == createdViewId &&
+                  widget.htmlEditorOptions.autoAdjustHeight) {
+                final docHeight = data['height'] ?? actualHeight;
+
+                if ((docHeight != null && docHeight != actualHeight) &&
+                    mounted) {
+                  setState(mounted, this.setState, () {
+                    actualHeight = docHeight +
+                        (toolbarKey.currentContext?.size?.height ?? 0);
+                  });
+                }
+              }
+
+              if (data['type'] != null &&
+                  data['type'].contains('toDart: onChangeContent') &&
+                  data['view'] == createdViewId) {
+                if (widget.callbacks != null &&
+                    widget.callbacks!.onChangeContent != null) {
+                  widget.callbacks!.onChangeContent!.call(data['contents']);
+                }
+
+                if (widget.htmlEditorOptions.shouldEnsureVisible &&
+                    Scrollable.of(context) != null) {
+                  Scrollable.of(context)!.position.ensureVisible(
+                      context.findRenderObject()!,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.easeIn);
+                }
+              }
+              if (data['type'] != null &&
+                  data['type'].contains('toDart: updateToolbar') &&
+                  data['view'] == createdViewId) {
+                if (widget.controller.toolbar != null) {
+                  widget.controller.toolbar!.updateToolbar(data);
+                }
+              }
+            },
+          );
+
+          html.window.postMessage(jsonStr, '*');
+          await Future.delayed(const Duration(seconds: 5), () {});
+          html.window.postMessage(jsonStr2, '*');
+        },
+      );
+    ui.platformViewRegistry.registerViewFactory(
+      createdViewId,
+      (int viewId) => iframe,
+    );
+
     setState(mounted, this.setState, () {
       summernoteInit = Future.value(true);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: widget.htmlEditorOptions.autoAdjustHeight
-          ? actualHeight
-          : widget.otherOptions.height,
-      child: Column(
-        children: <Widget>[
-          widget.htmlToolbarOptions.toolbarPosition ==
-                  ToolbarPosition.aboveEditor
-              ? ToolbarWidget(
-                  key: toolbarKey,
-                  controller: widget.controller,
-                  htmlToolbarOptions: widget.htmlToolbarOptions,
-                  callbacks: widget.callbacks)
-              : Container(height: 0, width: 0),
-          Expanded(
-              child: Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: FutureBuilder<bool>(
-                      future: summernoteInit,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return HtmlElementView(
-                            viewType: createdViewId,
-                          );
-                        } else {
-                          return Container(
-                              height: widget.htmlEditorOptions.autoAdjustHeight
-                                  ? actualHeight
-                                  : widget.otherOptions.height);
-                        }
-                      }))),
-          widget.htmlToolbarOptions.toolbarPosition ==
-                  ToolbarPosition.belowEditor
-              ? ToolbarWidget(
-                  key: toolbarKey,
-                  controller: widget.controller,
-                  htmlToolbarOptions: widget.htmlToolbarOptions,
-                  callbacks: widget.callbacks)
-              : Container(height: 0, width: 0),
-        ],
-      ),
-    );
-  }
-
-  /// Adds the callbacks the user set into JavaScript
-  String getJsCallbacks(Callbacks c) {
-    var callbacks = '';
-    if (c.onBeforeCommand != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.before.command', function(_, contents, \$editable) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onBeforeCommand", "contents": contents}), "*");
-          });\n
-        """;
-    }
-    if (c.onChangeCodeview != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.change.codeview', function(_, contents, \$editable) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onChangeCodeview", "contents": contents}), "*");
-          });\n
-        """;
-    }
-    if (c.onDialogShown != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.dialog.shown', function() {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onDialogShown"}), "*");
-          });\n
-        """;
-    }
-    if (c.onEnter != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.enter', function() {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onEnter"}), "*");
-          });\n
-        """;
-    }
-    if (c.onFocus != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.focus', function() {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onFocus"}), "*");
-          });\n
-        """;
-    }
-    if (c.onBlur != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.blur', function() {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onBlur"}), "*");
-          });\n
-        """;
-    }
-    if (c.onBlurCodeview != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.blur.codeview', function() {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onBlurCodeview"}), "*");
-          });\n
-        """;
-    }
-    if (c.onKeyDown != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.keydown', function(_, e) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onKeyDown", "keyCode": e.keyCode}), "*");
-          });\n
-        """;
-    }
-    if (c.onKeyUp != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.keyup', function(_, e) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onKeyUp", "keyCode": e.keyCode}), "*");
-          });\n
-        """;
-    }
-    if (c.onMouseDown != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.mousedown', function(_) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onMouseDown"}), "*");
-          });\n
-        """;
-    }
-    if (c.onMouseUp != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.mouseup', function(_) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onMouseUp"}), "*");
-          });\n
-        """;
-    }
-    if (c.onPaste != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.paste', function(_) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onPaste"}), "*");
-          });\n
-        """;
-    }
-    if (c.onScroll != null) {
-      callbacks = callbacks +
-          """
-          \$('#summernote-2').on('summernote.scroll', function(_) {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onScroll"}), "*");
-          });\n
-        """;
-    }
-    return callbacks;
-  }
-
-  /// Adds an event listener to check when a callback is fired
-  void addJSListener(Callbacks c) {
-    html.window.onMessage.listen((event) {
-      var data = json.decode(event.data);
-      if (data['type'] != null &&
-          data['type'].contains('toDart:') &&
-          data['view'] == createdViewId) {
-        if (data['type'].contains('onBeforeCommand')) {
-          c.onBeforeCommand!.call(data['contents']);
-        }
-        if (data['type'].contains('onChangeContent')) {
-          c.onChangeContent!.call(data['contents']);
-        }
-        if (data['type'].contains('onChangeCodeview')) {
-          c.onChangeCodeview!.call(data['contents']);
-        }
-        if (data['type'].contains('onDialogShown')) {
-          c.onDialogShown!.call();
-        }
-        if (data['type'].contains('onEnter')) {
-          c.onEnter!.call();
-        }
-        if (data['type'].contains('onFocus')) {
-          c.onFocus!.call();
-        }
-        if (data['type'].contains('onBlur')) {
-          c.onBlur!.call();
-        }
-        if (data['type'].contains('onBlurCodeview')) {
-          c.onBlurCodeview!.call();
-        }
-        if (data['type'].contains('onImageLinkInsert')) {
-          c.onImageLinkInsert!.call(data['url']);
-        }
-        if (data['type'].contains('onImageUpload')) {
-          var map = <String, dynamic>{
-            'lastModified': data['lastModified'],
-            'lastModifiedDate': data['lastModifiedDate'],
-            'name': data['name'],
-            'size': data['size'],
-            'type': data['mimeType'],
-            'base64': data['base64']
-          };
-          var jsonStr = json.encode(map);
-          var file = fileUploadFromJson(jsonStr);
-          c.onImageUpload!.call(file);
-        }
-        if (data['type'].contains('onImageUploadError')) {
-          if (data['base64'] != null) {
-            c.onImageUploadError!.call(
-                null,
-                data['base64'],
-                data['error'].contains('base64')
-                    ? UploadError.jsException
-                    : data['error'].contains('unsupported')
-                        ? UploadError.unsupportedFile
-                        : UploadError.exceededMaxSize);
-          } else {
-            var map = <String, dynamic>{
-              'lastModified': data['lastModified'],
-              'lastModifiedDate': data['lastModifiedDate'],
-              'name': data['name'],
-              'size': data['size'],
-              'type': data['mimeType']
-            };
-            var jsonStr = json.encode(map);
-            var file = fileUploadFromJson(jsonStr);
-            c.onImageUploadError!.call(
-                file,
-                null,
-                data['error'].contains('base64')
-                    ? UploadError.jsException
-                    : data['error'].contains('unsupported')
-                        ? UploadError.unsupportedFile
-                        : UploadError.exceededMaxSize);
-          }
-        }
-        if (data['type'].contains('onKeyDown')) {
-          c.onKeyDown!.call(data['keyCode']);
-        }
-        if (data['type'].contains('onKeyUp')) {
-          c.onKeyUp!.call(data['keyCode']);
-        }
-        if (data['type'].contains('onMouseDown')) {
-          c.onMouseDown!.call();
-        }
-        if (data['type'].contains('onMouseUp')) {
-          c.onMouseUp!.call();
-        }
-        if (data['type'].contains('onPaste')) {
-          c.onPaste!.call();
-        }
-        if (data['type'].contains('onScroll')) {
-          c.onScroll!.call();
-        }
-        if (data['type'].contains('characterCount')) {
-          widget.controller.characterCount = data['totalChars'];
-        }
-      }
     });
   }
 }

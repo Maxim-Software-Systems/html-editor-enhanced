@@ -308,7 +308,8 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
       }
     });
     if (widget.callbacks?.onChangeSelection != null) {
-      widget.callbacks!.onChangeSelection!.call(EditorSettings(
+      widget.callbacks!.onChangeSelection!.call(
+        EditorSettings(
           parentElement: parentElem,
           fontName: fontName,
           fontSize: fontSize,
@@ -328,7 +329,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           isAlignJustify: alignList[3] ?? false,
           lineHeight: _lineHeightSelectedItem,
           textDirection:
-              textDir == 'rtl' ? TextDirection.rtl : TextDirection.ltr));
+              textDir == 'rtl' ? TextDirection.rtl : TextDirection.ltr,
+        ),
+      );
     }
   }
 
@@ -577,12 +580,14 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? null
                 : widget.htmlToolbarOptions.dropdownBoxDecoration ??
                     BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withOpacity(0.12))),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      border: Border.all(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.12),
+                      ),
+                    ),
             child: CustomDropdownButtonHideUnderline(
               child: CustomDropdownButton<String>(
                 elevation: widget.htmlToolbarOptions.dropdownElevation,
@@ -659,12 +664,14 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? null
                 : widget.htmlToolbarOptions.dropdownBoxDecoration ??
                     BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withOpacity(0.12))),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      border: Border.all(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.12),
+                      ),
+                    ),
             child: CustomDropdownButtonHideUnderline(
               child: CustomDropdownButton<double>(
                 elevation: widget.htmlToolbarOptions.dropdownElevation,
@@ -689,44 +696,58 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   CustomDropdownMenuItem(
                     value: 1,
                     child: PointerInterceptor(
-                        child: Text(
-                            "${_fontSizeUnitSelectedItem == "px" ? "11" : "8"} $_fontSizeUnitSelectedItem")),
+                      child: Text(
+                        "${_fontSizeUnitSelectedItem == "px" ? "11" : "8"} $_fontSizeUnitSelectedItem",
+                      ),
+                    ),
                   ),
                   CustomDropdownMenuItem(
                     value: 2,
                     child: PointerInterceptor(
-                        child: Text(
-                            "${_fontSizeUnitSelectedItem == "px" ? "13" : "10"} $_fontSizeUnitSelectedItem")),
+                      child: Text(
+                        "${_fontSizeUnitSelectedItem == "px" ? "13" : "10"} $_fontSizeUnitSelectedItem",
+                      ),
+                    ),
                   ),
                   CustomDropdownMenuItem(
                     value: 3,
                     child: PointerInterceptor(
-                        child: Text(
-                            "${_fontSizeUnitSelectedItem == "px" ? "16" : "12"} $_fontSizeUnitSelectedItem")),
+                      child: Text(
+                        "${_fontSizeUnitSelectedItem == "px" ? "16" : "12"} $_fontSizeUnitSelectedItem",
+                      ),
+                    ),
                   ),
                   CustomDropdownMenuItem(
                     value: 4,
                     child: PointerInterceptor(
-                        child: Text(
-                            "${_fontSizeUnitSelectedItem == "px" ? "19" : "14"} $_fontSizeUnitSelectedItem")),
+                      child: Text(
+                        "${_fontSizeUnitSelectedItem == "px" ? "19" : "14"} $_fontSizeUnitSelectedItem",
+                      ),
+                    ),
                   ),
                   CustomDropdownMenuItem(
                     value: 5,
                     child: PointerInterceptor(
-                        child: Text(
-                            "${_fontSizeUnitSelectedItem == "px" ? "24" : "18"} $_fontSizeUnitSelectedItem")),
+                      child: Text(
+                        "${_fontSizeUnitSelectedItem == "px" ? "24" : "18"} $_fontSizeUnitSelectedItem",
+                      ),
+                    ),
                   ),
                   CustomDropdownMenuItem(
                     value: 6,
                     child: PointerInterceptor(
-                        child: Text(
-                            "${_fontSizeUnitSelectedItem == "px" ? "32" : "24"} $_fontSizeUnitSelectedItem")),
+                      child: Text(
+                        "${_fontSizeUnitSelectedItem == "px" ? "32" : "24"} $_fontSizeUnitSelectedItem",
+                      ),
+                    ),
                   ),
                   CustomDropdownMenuItem(
                     value: 7,
                     child: PointerInterceptor(
-                        child: Text(
-                            "${_fontSizeUnitSelectedItem == "px" ? "48" : "36"} $_fontSizeUnitSelectedItem")),
+                      child: Text(
+                        "${_fontSizeUnitSelectedItem == "px" ? "48" : "36"} $_fontSizeUnitSelectedItem",
+                      ),
+                    ),
                   ),
                 ],
                 value: _fontSizeSelectedItem,
