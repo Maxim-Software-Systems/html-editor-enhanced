@@ -1102,105 +1102,98 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   child: await showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return PointerInterceptor(
-                        debug: _isDebug,
-                        child: AlertDialog(
-                          scrollable: true,
-                          content: ColorPicker(
-                            color: newColor,
-                            onColorChanged: (color) {
-                              newColor = color;
-                            },
-                            title: Text('Choose a Color',
-                                style: Theme.of(context).textTheme.headline6),
-                            width: 40,
-                            height: 40,
-                            spacing: 0,
-                            runSpacing: 0,
-                            borderRadius: 0,
-                            wheelDiameter: 165,
-                            enableOpacity: false,
-                            showColorCode: true,
-                            colorCodeHasColor: true,
-                            pickersEnabled: <ColorPickerType, bool>{
-                              ColorPickerType.wheel: true,
-                            },
-                            copyPasteBehavior:
-                                const ColorPickerCopyPasteBehavior(
-                              parseShortHexCode: true,
-                            ),
-                            actionButtons: const ColorPickerActionButtons(
-                              dialogActionButtons: true,
-                            ),
+                      return AlertDialog(
+                        scrollable: true,
+                        content: ColorPicker(
+                          color: newColor,
+                          onColorChanged: (color) {
+                            newColor = color;
+                          },
+                          title: Text('Choose a Color',
+                              style: Theme.of(context).textTheme.headline6),
+                          width: 40,
+                          height: 40,
+                          spacing: 0,
+                          runSpacing: 0,
+                          borderRadius: 0,
+                          wheelDiameter: 165,
+                          enableOpacity: false,
+                          showColorCode: true,
+                          colorCodeHasColor: true,
+                          pickersEnabled: <ColorPickerType, bool>{
+                            ColorPickerType.wheel: true,
+                          },
+                          copyPasteBehavior: const ColorPickerCopyPasteBehavior(
+                            parseShortHexCode: true,
                           ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  if (t.getIcons()[index].icon ==
-                                      Icons.format_color_text) {
-                                    setState(mounted, this.setState, () {
-                                      _foreColorSelected = Colors.black;
-                                    });
-                                    widget.controller.execCommand(
-                                        'removeFormat',
-                                        argument: 'foreColor');
-                                    widget.controller.execCommand('foreColor',
-                                        argument: 'initial');
-                                  }
-                                  if (t.getIcons()[index].icon ==
-                                      Icons.format_color_fill) {
-                                    setState(mounted, this.setState, () {
-                                      _backColorSelected = Colors.white;
-                                    });
-                                    widget.controller.execCommand(
-                                        'removeFormat',
-                                        argument: 'hiliteColor');
-                                    widget.controller.execCommand('hiliteColor',
-                                        argument: 'initial');
-                                  }
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Reset to default color')),
-                            TextButton(
+                          actionButtons: const ColorPickerActionButtons(
+                            dialogActionButtons: true,
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
                               onPressed: () {
                                 if (t.getIcons()[index].icon ==
                                     Icons.format_color_text) {
-                                  widget.controller.execCommand('foreColor',
-                                      argument: (newColor.value & 0xFFFFFF)
-                                          .toRadixString(16)
-                                          .padLeft(6, '0')
-                                          .toUpperCase());
                                   setState(mounted, this.setState, () {
-                                    _foreColorSelected = newColor;
+                                    _foreColorSelected = Colors.black;
                                   });
+                                  widget.controller.execCommand('removeFormat',
+                                      argument: 'foreColor');
+                                  widget.controller.execCommand('foreColor',
+                                      argument: 'initial');
                                 }
                                 if (t.getIcons()[index].icon ==
                                     Icons.format_color_fill) {
-                                  widget.controller.execCommand('hiliteColor',
-                                      argument: (newColor.value & 0xFFFFFF)
-                                          .toRadixString(16)
-                                          .padLeft(6, '0')
-                                          .toUpperCase());
                                   setState(mounted, this.setState, () {
-                                    _backColorSelected = newColor;
+                                    _backColorSelected = Colors.white;
                                   });
+                                  widget.controller.execCommand('removeFormat',
+                                      argument: 'hiliteColor');
+                                  widget.controller.execCommand('hiliteColor',
+                                      argument: 'initial');
                                 }
-                                setState(mounted, this.setState, () {
-                                  _colorSelected[index] =
-                                      !_colorSelected[index];
-                                });
                                 Navigator.of(context).pop();
                               },
-                              child: Text('Set color'),
-                            )
-                          ],
-                        ),
+                              child: Text('Reset to default color')),
+                          TextButton(
+                            onPressed: () {
+                              if (t.getIcons()[index].icon ==
+                                  Icons.format_color_text) {
+                                widget.controller.execCommand('foreColor',
+                                    argument: (newColor.value & 0xFFFFFF)
+                                        .toRadixString(16)
+                                        .padLeft(6, '0')
+                                        .toUpperCase());
+                                setState(mounted, this.setState, () {
+                                  _foreColorSelected = newColor;
+                                });
+                              }
+                              if (t.getIcons()[index].icon ==
+                                  Icons.format_color_fill) {
+                                widget.controller.execCommand('hiliteColor',
+                                    argument: (newColor.value & 0xFFFFFF)
+                                        .toRadixString(16)
+                                        .padLeft(6, '0')
+                                        .toUpperCase());
+                                setState(mounted, this.setState, () {
+                                  _backColorSelected = newColor;
+                                });
+                              }
+                              setState(mounted, this.setState, () {
+                                _colorSelected[index] = !_colorSelected[index];
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Set color'),
+                          )
+                        ],
                       );
                     },
                   ),
