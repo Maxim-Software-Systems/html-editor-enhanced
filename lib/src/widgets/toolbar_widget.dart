@@ -1097,10 +1097,13 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 } else {
                   newColor = _backColorSelected;
                 }
-                await showDialog(
+                PointerInterceptor(
+                  debug: _isDebug,
+                  child: await showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return PointerInterceptor(
+                        debug: _isDebug,
                         child: AlertDialog(
                           scrollable: true,
                           content: ColorPicker(
@@ -1199,7 +1202,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                           ],
                         ),
                       );
-                    });
+                    },
+                  ),
+                );
               }
             }
           },
@@ -1780,7 +1785,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 final urlFocus = FocusNode();
                 final formKey = GlobalKey<FormState>();
                 var openNewTab = false;
-                await showDialog(
+                PointerInterceptor(
+                  debug: _isDebug,
+                  child: await showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return PointerInterceptor(
@@ -1908,7 +1915,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                           );
                         }),
                       );
-                    });
+                    },
+                  ),
+                );
               }
             }
             if (t.getIcons()[index].icon == Icons.image_outlined) {
